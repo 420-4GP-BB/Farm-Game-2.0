@@ -13,7 +13,14 @@ public class GestionnaireInterface : MonoBehaviour
         Difficile
     }
 
+    enum Personnage
+    {
+        Fermier,
+        Fermiere
+    }
+
     private Difficulte difficulte;
+    private Personnage personnage;
 
     [SerializeField] private TMP_InputField nomJoueur;
     [SerializeField] private TMP_Text presentation;
@@ -25,6 +32,10 @@ public class GestionnaireInterface : MonoBehaviour
     [SerializeField] private TMP_Text[] valeursDepart;
     [SerializeField] private TMP_Dropdown difficulteDropdown;
 
+    [SerializeField] private TMP_Dropdown personnagesDropdown;
+    [SerializeField] private GameObject fermier;
+    [SerializeField] private GameObject fermiere;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -33,11 +44,15 @@ public class GestionnaireInterface : MonoBehaviour
 
         difficulte = Difficulte.Facile;
         MettreAJour(valeursFacile);
+
+        personnage = Personnage.Fermier;
+
     }
 
     void Update()
     {
         _boutonDemarrer.interactable = nomJoueur.text != string.Empty;
+        changerPersonnage();
     }
 
     public void ChangerDifficulte()
@@ -107,5 +122,22 @@ public class GestionnaireInterface : MonoBehaviour
     public void ChangerNomJoueur()
     {
         presentation.text = $"\u266A \u266B Dans la ferme \u00e0  {nomJoueur.text} \u266B \u266A";
+    }
+
+    private void changerPersonnage()
+    {
+        personnage = (Personnage)personnagesDropdown.value;
+        switch (personnage)
+        {
+            case Personnage.Fermier:
+                fermier.SetActive(true);
+                fermiere.SetActive(false);
+                break;
+            case Personnage.Fermiere:
+                fermier.SetActive(false);
+                fermiere.SetActive(true);
+                break;
+
+        }
     }
 }
