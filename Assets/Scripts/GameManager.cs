@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private Soleil _soleil;
     [SerializeField] GameObject[] personnage;
     private ComportementJoueur _joueur;
-
+    public GameObject leJoueur;
     private const float DISTANCE_ACTION = 3.0f;
 
     private Inventaire _inventaireJoueur;
@@ -15,11 +15,15 @@ public class GameManager : MonoBehaviour
     private ChouMesh3D[] _chous;
     public int NumeroJour = 1;
 
-    void Start()
+    private void Awake()
     {
         initialiserPersonnage(ParametresParties.Instance.personnageSelec);
+    }
 
-        _joueur = GameObject.Find("Joueur").GetComponent<ComportementJoueur>();
+    void Start()
+    {
+
+        _joueur = GameObject.Find("GameManager").GetComponent<GameManager>().leJoueur.GetComponent<ComportementJoueur>();
         _inventaireJoueur = _joueur.GetComponent<Inventaire>();
         _energieJoueur = _joueur.GetComponent<EnergieJoueur>();
         _chous = FindObjectsByType<ChouMesh3D>(FindObjectsSortMode.None);
@@ -79,15 +83,16 @@ public class GameManager : MonoBehaviour
 
         if(personnageSelec == 0)
         {
-            Debug.Log("on entre");
             personnage[0].SetActive(true);
-            personnage[1].gameObject.SetActive(false);
+            personnage[1].SetActive(false);
+            leJoueur = personnage[0];
 
         }
         else
         {
-            personnage[0].gameObject.SetActive(false);
-            personnage[1].gameObject.SetActive(true);
+            leJoueur = personnage[1];
+            personnage[0].SetActive(false);
+            personnage[1].SetActive(true);
         }
 
 

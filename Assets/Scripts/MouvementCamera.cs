@@ -1,17 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MouvementCamera : MonoBehaviour
 {
-
     private UnityEngine.GameObject _joueur;
     [SerializeField] private Vector3 _offsetJoueur;
 
     // Start is called before the first frame update
     void Start()
     {
-        _joueur = UnityEngine.GameObject.Find("Joueur");
+        _joueur = GameObject.Find("GameManager").GetComponent<GameManager>().leJoueur;
     }
 
     // Update is called once per frame

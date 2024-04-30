@@ -99,7 +99,6 @@ public class GestionnaireInterface : MonoBehaviour
 
         ParametresParties.Instance.personnageSelec = personnagesDropdown.value;
 
-        Debug.Log(personnagesDropdown.value.ToString());
 
 
         if (nomJoueur.text != string.Empty)
@@ -137,19 +136,15 @@ public class GestionnaireInterface : MonoBehaviour
         {
             case Personnage.Fermier:
                 lePersonnage = fermier;
-                Debug.Log(lePersonnage + " a ete change par fermier");
                 fermier.SetActive(true);
                 fermiere.SetActive(false);
                 //ParametresParties.Instance.personnageSelec = lePersonnage; 
-                Debug.Log("Personnage changé : " + lePersonnage.name);
                 break;
             case Personnage.Fermiere:
                 lePersonnage = fermiere;
-                Debug.Log(lePersonnage + " a ete change par fermiere");
                 fermier.SetActive(false);
                 fermiere.SetActive(true);
                 //ParametresParties.Instance.personnageSelec = lePersonnage;  
-                Debug.Log("Personnage changé : " + lePersonnage.name);
                 break;
 
         }
