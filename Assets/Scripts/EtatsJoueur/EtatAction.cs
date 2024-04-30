@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
 public class EtatAction : EtatJoueur
 {
@@ -13,6 +14,11 @@ public class EtatAction : EtatJoueur
 
     private Vector3 pointDestination;
 
+    private Quaternion rotationInitiale;
+    private Quaternion rotationVersObjet;
+    private float dureeRotation = 0.25f;
+    private bool enRotation = true;
+
     public EtatAction(ComportementJoueur sujet, GameObject destination) : base(sujet)
     {
         _destination = destination;
@@ -21,21 +27,49 @@ public class EtatAction : EtatJoueur
 
     public override void Enter()
     {
-        Animateur.SetBool("Walking", true);
-        ControleurMouvement.enabled = false;
-        _navMeshAgent.enabled = true;
+        rotationInitiale = Sujet.transform.rotation;
         Vector3 direction = _destination.transform.position - Sujet.transform.position;
-        Sujet.transform.rotation = Quaternion.LookRotation(direction);
-        Vector3 pointProche = _destination.GetComponent<Collider>().ClosestPoint(Sujet.transform.position);
-        pointDestination = pointProche - direction.normalized * 0.3f;
-        _navMeshAgent.SetDestination(pointDestination);
+        rotationVersObjet = Quaternion.LookRotation(direction);
+
+        Animateur.SetBool("Walking", false);
+        ControleurMouvement.enabled = false;
+        _navMeshAgent.enabled = false;
+
+        Sujet.StartCoroutine(RotateOverTime(rotationVersObjet, dureeRotation));
     }
+
+    private IEnumerator RotateOverTime(Quaternion targetRotation, float duration)
+    {
+        enRotation = true;
+        float timeElapsed = 0f;
+        while (timeElapsed < duration)
+        {
+            enRotation = true;
+            Sujet.transform.rotation = Quaternion.Slerp(rotationInitiale, targetRotation, timeElapsed / duration);
+            timeElapsed += Time.deltaTime;
+            yield return null;
+        }
+        Sujet.transform.rotation = targetRotation; // S'assure que la rotation atteint exactement la cible
+        enRotation = false;
+        
+    }
+
 
     // On doit se rendre au point pour faire l'action
     public override void Handle()
     {
+        // Lancer la rotation seulement si elle n'a pas déjà été commencée
+        if (!enRotation)
+        {
+            Animateur.SetBool("Walking", true);
+            _navMeshAgent.enabled = true;
+            Vector3 pointProche = _destination.GetComponent<Collider>().ClosestPoint(Sujet.transform.position);
+            pointDestination = pointProche - (Sujet.transform.position - _destination.transform.position).normalized * 0.3f;
+            _navMeshAgent.SetDestination(pointDestination);
+        }
+
         float distance = Vector3.Distance(pointDestination, Sujet.transform.position);
-        if (!_navMeshAgent.pathPending && distance <= 0.3f)
+        if (!_navMeshAgent.pathPending && !enRotation && distance <= 0.4f)
         {
             _navMeshAgent.enabled = false;
             pointDestination.y = Sujet.transform.position.y;
@@ -91,3 +125,48 @@ public class EtatAction : EtatJoueur
         Animateur.SetBool("Walking", false);
     }
 }
+
+
+//Animateur.SetBool("Walking", false);
+//_navMeshAgent.enabled = false;
+
+//isRotating = true;
+
+//Debug.Log("Rotation finie");
+
+
+//if (isRotating)
+//{
+//tempsPris += Time.deltaTime;
+//float normalizedTime = tempsPris / dureeRotation;
+//if (normalizedTime < 1.0f)
+//{
+//  isRotating = false;
+//}
+//else
+//{
+// Rotation is complete
+//Sujet.transform.rotation = rotationVersObjet;
+//isRotating = false;
+
+// Now, start walking
+
+
+
+
+/*Animateur.SetBool("Walking", true);
+        ControleurMouvement.enabled = false;
+        _navMeshAgent.enabled = true;
+        Vector3 direction = _destination.transform.position - Sujet.transform.position;
+        Sujet.transform.rotation = Quaternion.LookRotation(direction);
+        Vector3 pointProche = _destination.GetComponent<Collider>().ClosestPoint(Sujet.transform.position);
+        pointDestination = pointProche - direction.normalized * 0.3f;
+        _navMeshAgent.SetDestination(pointDestination);*/
+
+
+// L'enseignant m'a pardonne
+//Animateur.SetBool("Walking", true);
+//_navMeshAgent.enabled = true;
+//Vector3 pointProche = _destination.GetComponent<Collider>().ClosestPoint(Sujet.transform.position);
+//pointDestination = pointProche - (Sujet.transform.position - _destination.transform.position).normalized * 0.3f;
+//_navMeshAgent.SetDestination(pointDestination);
