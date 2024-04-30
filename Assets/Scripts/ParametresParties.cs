@@ -1,6 +1,8 @@
+using Unity.VisualScripting;
+using UnityEngine;
+
 public class ParametresParties
 {
-    public static ParametresParties Instance { get; private set; } = new ParametresParties();
 
     public string NomJoueur { get; set; } = "Mathurin";
     public int OrDepart { get; set; } = 200;
@@ -19,7 +21,28 @@ public class ParametresParties
     ///// </summary>
     public int DelaiCueillete { get; set; } = 5;
 
+    public int personnageSelec { get; set; }
+
+    private static ParametresParties _instance;
+
+    public static ParametresParties Instance {get;set;} = new ParametresParties();
+
     private ParametresParties()
     {
     }
+
+    /*
+    void Awake()
+    {
+        if (_instance != null && _instance != this)
+        {
+            _instance = this;
+            DontDestroyOnLoad(this.gameObject);
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+    }
+    */
 }

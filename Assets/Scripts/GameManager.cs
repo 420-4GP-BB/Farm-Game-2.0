@@ -1,10 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private Soleil _soleil;
-
+    [SerializeField] GameObject[] personnage;
     private ComportementJoueur _joueur;
 
     private const float DISTANCE_ACTION = 3.0f;
@@ -16,6 +17,8 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+        initialiserPersonnage(ParametresParties.Instance.personnageSelec);
+
         _joueur = GameObject.Find("Joueur").GetComponent<ComportementJoueur>();
         _inventaireJoueur = _joueur.GetComponent<Inventaire>();
         _energieJoueur = _joueur.GetComponent<EnergieJoueur>();
@@ -55,7 +58,7 @@ public class GameManager : MonoBehaviour
         }
 
         // L'?tat du joueur peut affecter le passage du temps (ex.: Dodo: tout va vite, menus: le temps est stopp?, etc)
-        Time.timeScale *= _joueur.GetComponent<ComportementJoueur>().MultiplicateurScale;
+        Time.timeScale *= _joueur.MultiplicateurScale;
     }
 
     /// <summary>
@@ -69,5 +72,25 @@ public class GameManager : MonoBehaviour
             "Vous n'avez pas r?ussi ? vous garder en vie, vous tombez sans connaissance au milieu du champ." +
             "Un loup passe et vous d?guste en guise de d?ner. Meilleure chance la prochaine partie!");
         Time.timeScale = 0;
+    }
+
+    private void initialiserPersonnage(int personnageSelec)
+    {
+
+        if(personnageSelec == 0)
+        {
+            Debug.Log("on entre");
+            personnage[0].SetActive(true);
+            personnage[1].gameObject.SetActive(false);
+
+        }
+        else
+        {
+            personnage[0].gameObject.SetActive(false);
+            personnage[1].gameObject.SetActive(true);
+        }
+
+
+
     }
 }

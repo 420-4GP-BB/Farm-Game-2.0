@@ -21,6 +21,7 @@ public class GestionnaireInterface : MonoBehaviour
 
     private Difficulte difficulte;
     private Personnage personnage;
+    private GameObject lePersonnage;
 
     [SerializeField] private TMP_InputField nomJoueur;
     [SerializeField] private TMP_Text presentation;
@@ -96,6 +97,11 @@ public class GestionnaireInterface : MonoBehaviour
         ParametresParties.Instance.TempsCroissance = valeursActuelles[3];
         ParametresParties.Instance.DelaiCueillete = valeursActuelles[4];
 
+        ParametresParties.Instance.personnageSelec = personnagesDropdown.value;
+
+        Debug.Log(personnagesDropdown.value.ToString());
+
+
         if (nomJoueur.text != string.Empty)
         {
             UnityEngine.SceneManagement.SceneManager.LoadScene("Ferme");
@@ -130,12 +136,20 @@ public class GestionnaireInterface : MonoBehaviour
         switch (personnage)
         {
             case Personnage.Fermier:
+                lePersonnage = fermier;
+                Debug.Log(lePersonnage + " a ete change par fermier");
                 fermier.SetActive(true);
                 fermiere.SetActive(false);
+                //ParametresParties.Instance.personnageSelec = lePersonnage; 
+                Debug.Log("Personnage changé : " + lePersonnage.name);
                 break;
             case Personnage.Fermiere:
+                lePersonnage = fermiere;
+                Debug.Log(lePersonnage + " a ete change par fermiere");
                 fermier.SetActive(false);
                 fermiere.SetActive(true);
+                //ParametresParties.Instance.personnageSelec = lePersonnage;  
+                Debug.Log("Personnage changé : " + lePersonnage.name);
                 break;
 
         }
