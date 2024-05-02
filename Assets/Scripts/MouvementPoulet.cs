@@ -3,10 +3,12 @@ using UnityEngine.AI;
 
 public class MouvementPoulet : MonoBehaviour
 {
-    // private UnityEngine.GameObject _zoneRelachement;
-    // private float _angleDerriere;  // L'angle pour que le poulet soit derrière le joueur
-    // private UnityEngine.GameObject joueur;
-    // private bool _suivreJoueur = true;
+    private UnityEngine.GameObject _zoneRelachement;
+    private float _angleDerriere;  
+    private UnityEngine.GameObject joueur;
+    private bool _suivreJoueur;
+    private bool _estAlaFerme;
+    [SerializeField] GameObject zoneEntree;
 
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -15,49 +17,79 @@ public class MouvementPoulet : MonoBehaviour
 
     void Start()
     {
-        // _zoneRelachement = UnityEngine.GameObject.Find("ZoneRelachePoulet");
-        // joueur = UnityEngine.GameObject.Find("Joueur");
-        // _suivreJoueur = true;
-        // _angleDerriere = Random.Range(-60.0f, 60.0f);
+        Debug.Log("Poule crée");
+        _zoneRelachement = UnityEngine.GameObject.Find("NavMeshObstacle");
+        joueur = GameObject.Find("GameManager").GetComponent<GameManager>().leJoueur;
+        
+        _angleDerriere = Random.Range(-60.0f, 60.0f);
 
         _animator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
         _pointsDeDeplacement = GameObject.FindGameObjectsWithTag("PointsPoulet");
         _animator.SetBool("Walk", true);
+        _agent.stoppingDistance = 3.5f;
         Initialiser();
     }
 
     void Initialiser()
     {
-        // Position initiale sur la ferme
         _agent.enabled = false;
-        var point = _pointsDeDeplacement[Random.Range(0, _pointsDeDeplacement.Length)];
-        transform.position = point.transform.position;
+        _suivreJoueur = true;
+        _estAlaFerme = false;
+        Vector3 direction = Quaternion.Euler(0, _angleDerriere, 0) * joueur.transform.forward;
+        Vector3 point = joueur.transform.position + direction.normalized * 0.5f;
+        transform.position = point;
         _agent.enabled = true;
+        _agent.speed = Vector3.Distance(transform.position, joueur.transform.position) * 5;
 
-        gameObject.GetComponent<PondreOeufs>().enabled = true;
-
-        ChoisirDestinationAleatoire();
+        Debug.Log("Suivre joueur : " + _suivreJoueur + ", Est la ferme : " + _estAlaFerme);
     }
 
     void ChoisirDestinationAleatoire()
     {
         GameObject point = _pointsDeDeplacement[Random.Range(0, _pointsDeDeplacement.Length)];
         _agent.SetDestination(point.transform.position);
+        _agent.stoppingDistance = 0.5f;
     }
 
     void Update()
     {
-        // if (_suivreJoueur)
-        // {
-        //     Vector3 directionAvecJoueur = Quaternion.AngleAxis(_angleDerriere, Vector3.up) * joueur.transform.forward;
-        //     transform.position = joueur.transform.position - directionAvecJoueur;
-        //     transform.rotation = joueur.transform.rotation;
-        // }
+         if (_suivreJoueur && !_estAlaFerme)
+        {
 
-        if (!_agent.pathPending && _agent.remainingDistance < 0.5f)
+            //_agent.SetDestination(joueur.transform.position);
+            //Debug.Log("Update -> Suivre joueur : " + _suivreJoueur + ", Est la ferme : " + _estAlaFerme);
+
+
+            if (Vector3.Distance(transform.position, joueur.transform.position) > 2f)
+            {
+                _agent.SetDestination(joueur.transform.position);
+            }
+            else
+            {
+                _agent.SetDestination(transform.position);
+            }
+            
+        }
+
+        if (_estAlaFerme && !_agent.pathPending && _agent.remainingDistance < _agent.stoppingDistance)
         {
             ChoisirDestinationAleatoire();
+        }
+        
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.gameObject == _zoneRelachement)
+        {
+            Debug.Log("On entre dans le trigger");
+            _agent.speed = 1;
+            _suivreJoueur = false;
+            _estAlaFerme = true;
+            ChoisirDestinationAleatoire();
+            gameObject.GetComponent<PondreOeufs>().enabled = true;
         }
     }
 }
