@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using Unity.VisualScripting;
 
 public class EtatAction : EtatJoueur
 {
@@ -27,18 +28,31 @@ public class EtatAction : EtatJoueur
 
     public override void Enter()
     {
-        rotationInitiale = Sujet.transform.rotation;
-        Vector3 direction = _destination.transform.position - Sujet.transform.position;
-        rotationVersObjet = Quaternion.LookRotation(direction);
+        
+        Arbre arbre = _destination.GetComponent<Arbre>();
+        if (arbre != null && arbre.estCollation)
+        {
+            Debug.Log("Cet arbre est destiné à la collation, ne pas s'approcher.");
+            Sujet.ChangerEtat(Sujet.EtatNormal);
+            //return;
+        }
+        else
+        {
+            rotationInitiale = Sujet.transform.rotation;
+            Vector3 direction = _destination.transform.position - Sujet.transform.position;
+            rotationVersObjet = Quaternion.LookRotation(direction);
 
-        Animateur.SetBool("Walking", false);
-        ControleurMouvement.enabled = false;
-        _navMeshAgent.enabled = false;
+            Animateur.SetBool("Walking", false);
+            ControleurMouvement.enabled = false;
+            _navMeshAgent.enabled = false;
 
-        Sujet.StartCoroutine(RotateOverTime(rotationVersObjet, dureeRotation));
+            Sujet.StartCoroutine(faireRotation(rotationVersObjet, dureeRotation));
+        }
+
+        
     }
 
-    private IEnumerator RotateOverTime(Quaternion targetRotation, float duration)
+    private IEnumerator faireRotation(Quaternion targetRotation, float duration)
     {
         enRotation = true;
         float timeElapsed = 0f;
@@ -49,16 +63,16 @@ public class EtatAction : EtatJoueur
             timeElapsed += Time.deltaTime;
             yield return null;
         }
-        Sujet.transform.rotation = targetRotation; // S'assure que la rotation atteint exactement la cible
+        Sujet.transform.rotation = targetRotation;
         enRotation = false;
         
     }
 
 
-    // On doit se rendre au point pour faire l'action
     public override void Handle()
     {
-        // Lancer la rotation seulement si elle n'a pas déjà été commencée
+        float distanceMin = _destination.GetComponent<Arbre>() != null || _destination.GetComponent<Buche>() != null ? 1.2f : 0.4f;
+
         if (!enRotation)
         {
             Animateur.SetBool("Walking", true);
@@ -69,53 +83,25 @@ public class EtatAction : EtatJoueur
         }
 
         float distance = Vector3.Distance(pointDestination, Sujet.transform.position);
-        if (!_navMeshAgent.pathPending && !enRotation && distance <= 0.4f)
+
+        if (!_navMeshAgent.pathPending && !enRotation && distance <= distanceMin)
         {
             _navMeshAgent.enabled = false;
             pointDestination.y = Sujet.transform.position.y;
-            Sujet.transform.position = pointDestination;
+            Sujet.transform.position = _destination.GetComponent<Arbre>() != null ? pointDestination : pointDestination;
+            Debug.Log("Arrivé à la bûche et prêt à ramasser.");
 
             var actionnable = _destination.GetComponent<IActionnable>();
-            if (actionnable != null)
+            if (actionnable != null && actionnable.Permis(Sujet))
             {
+                Debug.Log("Changement d'état pour ramasser la bûche.");
                 Sujet.ChangerEtat(actionnable.EtatAUtiliser(Sujet));
             }
+            
         }
 
-        //Vector3 direction = _destination.transform.position - Sujet.transform.position;
-        //Sujet.transform.rotation = Quaternion.LookRotation(direction);
-        //Vector3 pointProche = _destination.GetComponent<Collider>().ClosestPoint(Sujet.transform.position);
-        //Vector3 pointDestination = pointProche - direction.normalized * 0.1f;
 
-        //if (Vector3.Distance(Sujet.transform.position, pointDestination) > 0.1f)
-        //{
-        //    float distanceAvant = Vector3.Distance(Sujet.transform.position, pointDestination);
-        //    ControleurMouvement.SimpleMove(Sujet.transform.forward * (Sujet.VitesseDeplacement));
 
-        //    Il faudrait peut - ?tre essayer avec un NavMesh ici
-        //    Sujet.transform.Translate(Sujet.transform.forward * (Sujet.VitesseDeplacement * Time.deltaTime), Space.World);
-        //    Sujet.transform.rotation = Quaternion.Euler(0, Sujet.transform.rotation.eulerAngles.y, 0);
-        //    float distanceApres = Vector3.Distance(Sujet.transform.position, pointDestination);
-
-        //}
-        //else
-        //{
-        //    ControleurMouvement.enabled = false;
-        //    Sujet.transform.position = pointDestination;
-
-        //    Chou chou = _destination.GetComponent<Chou>();
-        //    if (chou != null)
-        //    {
-        //        Sujet.ChangerEtat(new PlanterChou(Sujet, chou));
-        //    }
-
-        //    Oeuf oeuf = _destination.GetComponent<Oeuf>();
-        //    if (oeuf != null)
-        //    {
-        //        Sujet.ChangerEtat(new RamasserOeuf(Sujet, oeuf));
-        //    }
-        //    ControleurMouvement.enabled = true;
-        //}
     }
 
     public override void Exit()
@@ -126,47 +112,37 @@ public class EtatAction : EtatJoueur
     }
 }
 
+//Vector3 direction = _destination.transform.position - Sujet.transform.position;
+//Sujet.transform.rotation = Quaternion.LookRotation(direction);
+//Vector3 pointProche = _destination.GetComponent<Collider>().ClosestPoint(Sujet.transform.position);
+//Vector3 pointDestination = pointProche - direction.normalized * 0.1f;
 
-//Animateur.SetBool("Walking", false);
-//_navMeshAgent.enabled = false;
-
-//isRotating = true;
-
-//Debug.Log("Rotation finie");
-
-
-//if (isRotating)
+//if (Vector3.Distance(Sujet.transform.position, pointDestination) > 0.1f)
 //{
-//tempsPris += Time.deltaTime;
-//float normalizedTime = tempsPris / dureeRotation;
-//if (normalizedTime < 1.0f)
-//{
-//  isRotating = false;
+//    float distanceAvant = Vector3.Distance(Sujet.transform.position, pointDestination);
+//    ControleurMouvement.SimpleMove(Sujet.transform.forward * (Sujet.VitesseDeplacement));
+
+//    Il faudrait peut - ?tre essayer avec un NavMesh ici
+//    Sujet.transform.Translate(Sujet.transform.forward * (Sujet.VitesseDeplacement * Time.deltaTime), Space.World);
+//    Sujet.transform.rotation = Quaternion.Euler(0, Sujet.transform.rotation.eulerAngles.y, 0);
+//    float distanceApres = Vector3.Distance(Sujet.transform.position, pointDestination);
+
 //}
 //else
 //{
-// Rotation is complete
-//Sujet.transform.rotation = rotationVersObjet;
-//isRotating = false;
+//    ControleurMouvement.enabled = false;
+//    Sujet.transform.position = pointDestination;
 
-// Now, start walking
+//    Chou chou = _destination.GetComponent<Chou>();
+//    if (chou != null)
+//    {
+//        Sujet.ChangerEtat(new PlanterChou(Sujet, chou));
+//    }
 
-
-
-
-/*Animateur.SetBool("Walking", true);
-        ControleurMouvement.enabled = false;
-        _navMeshAgent.enabled = true;
-        Vector3 direction = _destination.transform.position - Sujet.transform.position;
-        Sujet.transform.rotation = Quaternion.LookRotation(direction);
-        Vector3 pointProche = _destination.GetComponent<Collider>().ClosestPoint(Sujet.transform.position);
-        pointDestination = pointProche - direction.normalized * 0.3f;
-        _navMeshAgent.SetDestination(pointDestination);*/
-
-
-// L'enseignant m'a pardonne
-//Animateur.SetBool("Walking", true);
-//_navMeshAgent.enabled = true;
-//Vector3 pointProche = _destination.GetComponent<Collider>().ClosestPoint(Sujet.transform.position);
-//pointDestination = pointProche - (Sujet.transform.position - _destination.transform.position).normalized * 0.3f;
-//_navMeshAgent.SetDestination(pointDestination);
+//    Oeuf oeuf = _destination.GetComponent<Oeuf>();
+//    if (oeuf != null)
+//    {
+//        Sujet.ChangerEtat(new RamasserOeuf(Sujet, oeuf));
+//    }
+//    ControleurMouvement.enabled = true;
+//}

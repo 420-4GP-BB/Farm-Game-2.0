@@ -7,6 +7,7 @@ public static class ConstantesJeu
     public const float COUT_PLANTER = 0.002f;
     public const float COUT_CUEILLIR = 0.001f;
     public const float COUT_IMMOBILE = 0.0001f;
+    public const float COUT_ABBATRE = 0.005f;
 
     // Ce que le joueur peut gagner en énergie
     public const float GAIN_ENERGIE_MANGER_OEUF = 0.25f;
