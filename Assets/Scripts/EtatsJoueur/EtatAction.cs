@@ -71,7 +71,7 @@ public class EtatAction : EtatJoueur
 
     public override void Handle()
     {
-        float distanceMin = _destination.GetComponent<Arbre>() != null || _destination.GetComponent<Buche>() != null ? 1.2f : 0.4f;
+        float distanceMin = _destination.GetComponent<Arbre>() != null || _destination.GetComponent<Buche>() != null ? 1.2f : 0.6f;
 
         if (!enRotation)
         {

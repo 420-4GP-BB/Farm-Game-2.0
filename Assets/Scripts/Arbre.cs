@@ -6,6 +6,43 @@ public class Arbre : MonoBehaviour, IBattable
 {
     [SerializeField] public bool estCollation;
     [SerializeField] GameObject buchePrefab;
+    [SerializeField] GameObject[] lesCollationPrefab;
+    private bool uneCollationAuPied;
+    private int unRandom;
+    private GameObject uneCollation;
+
+    void Start()
+    {
+        uneCollationAuPied = false;
+        if (estCollation)
+        {
+            StartCoroutine(faireCollation());
+        }
+
+    }
+
+   
+
+    IEnumerator faireCollation()
+    {
+            yield return new WaitForSeconds(30.0f);
+            if (!uneCollationAuPied)
+            {
+                unRandom = Random.Range(0, lesCollationPrefab.Length);
+                uneCollation = Instantiate(lesCollationPrefab[unRandom]);
+                uneCollation.transform.position = new Vector3(transform.position.x +1, transform.position.y + 3, transform.position.z);
+                uneCollation.AddComponent<Rigidbody>();
+                uneCollation.GetComponent<Collation>().designerArbreParent(this);
+                uneCollationAuPied = true;
+            }
+    }
+
+    public void collationRamassee()
+    {
+        uneCollationAuPied = false;
+        StartCoroutine(faireCollation());
+    }
+   
 
     public void Abbatre()
     {
@@ -43,3 +80,5 @@ public EtatJoueur EtatAUtiliser(ComportementJoueur Sujet)
         return true;
     }
 }
+
+

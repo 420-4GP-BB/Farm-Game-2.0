@@ -45,6 +45,8 @@ public class ComportementJoueur : MonoBehaviour
 
     private Soleil _soleil;
 
+    private Collation _collation;
+
 
     // Start is called before the first frame update
     void Start()
@@ -68,6 +70,8 @@ public class ComportementJoueur : MonoBehaviour
         TempsDepuisDernierRepas = 0.0f;
 
         GetComponent<NavMeshAgent>().enabled = false;
+
+
     }
 
     void Update()
@@ -110,6 +114,13 @@ public class ComportementJoueur : MonoBehaviour
                 "C'était... Correct. En salade ça aurait été meilleur");
             TempsDepuisDernierRepas = 0.0f;
         }
+    }
+
+    public void MangerCollation(string laCollation)
+    {
+        _energieJoueur.Energie += ConstantesJeu.GAIN_ENERGIE_COLLATION;
+        GestionnaireMessages.Instance.AfficherMessage($"Vous mangez {laCollation}", "C'était délicieux");
+        TempsDepuisDernierRepas = 0.0f;
     }
 
     internal bool DansMenu()

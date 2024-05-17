@@ -13,6 +13,7 @@ public static class ConstantesJeu
     public const float GAIN_ENERGIE_MANGER_OEUF = 0.25f;
     public const float GAIN_ENERGIE_MANGER_CHOU = 0.35f;
     public const float GAIN_ENERGIE_SOMMEIL = 0.005f;    // Le joueur gagne de l'énergie en dormant
+    public const float GAIN_ENERGIE_COLLATION = 0.15f;
 
     // Constantes relatives au temps dans une journée
     public const float MINUTES_PAR_JOUR = 1440.0f;

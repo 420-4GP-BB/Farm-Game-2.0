@@ -122,3 +122,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   estCollation: 0
   buchePrefab: {fileID: 1360994071702760, guid: 640e2e58c89e3714881006bd0c5eeabf, type: 3}
+  lesCollationPrefab:
+  - {fileID: 4208630599157371214, guid: fb9df9793cb5c2f4cb9acc1fd0fe706d, type: 3}
+  - {fileID: 7009146036524199079, guid: 8613b0d09ac77334786dd6f402395242, type: 3}
+  - {fileID: 1765995492758009968, guid: d7bf326dccc66684f8296450695e670f, type: 3}
