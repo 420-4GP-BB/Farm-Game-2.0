@@ -93,6 +93,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 647edd5944e4091418c641d293800bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zoneEntree: {fileID: 0}
 --- !u!195 &1007931774087834418
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -172,7 +173,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8326564455130043134}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0507bf30e64543349bed6e50dbe46ca7, type: 3}
   m_Name: 

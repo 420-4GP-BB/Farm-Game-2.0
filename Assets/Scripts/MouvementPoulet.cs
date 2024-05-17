@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,8 +8,8 @@ public class MouvementPoulet : MonoBehaviour
     private float _angleDerriere;  
     private UnityEngine.GameObject joueur;
     private bool _suivreJoueur;
-    private bool _estAlaFerme;
-    [SerializeField] GameObject zoneEntree;
+    public bool _estAlaFerme;
+    [SerializeField] GameObject ferme;
 
     private NavMeshAgent _agent;
     private Animator _animator;
@@ -28,7 +29,10 @@ public class MouvementPoulet : MonoBehaviour
         _pointsDeDeplacement = GameObject.FindGameObjectsWithTag("PointsPoulet");
         _animator.SetBool("Walk", true);
         _agent.stoppingDistance = 3.5f;
-        Initialiser();
+        if (!_estAlaFerme)
+        {
+            Initialiser();
+        }
     }
 
     void Initialiser()
@@ -56,11 +60,6 @@ public class MouvementPoulet : MonoBehaviour
     {
          if (_suivreJoueur && !_estAlaFerme)
         {
-
-            //_agent.SetDestination(joueur.transform.position);
-            //Debug.Log("Update -> Suivre joueur : " + _suivreJoueur + ", Est la ferme : " + _estAlaFerme);
-
-
             if (Vector3.Distance(transform.position, joueur.transform.position) > 2f)
             {
                 _agent.SetDestination(joueur.transform.position);
@@ -74,6 +73,7 @@ public class MouvementPoulet : MonoBehaviour
 
         if (_estAlaFerme && !_agent.pathPending && _agent.remainingDistance < _agent.stoppingDistance)
         {
+            _agent.speed = 1;
             ChoisirDestinationAleatoire();
         }
         
@@ -92,4 +92,5 @@ public class MouvementPoulet : MonoBehaviour
             gameObject.GetComponent<PondreOeufs>().enabled = true;
         }
     }
+
 }
