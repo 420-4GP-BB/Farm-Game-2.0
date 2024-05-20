@@ -23,6 +23,8 @@ public class ParametresParties
 
     public int personnageSelec { get; set; }
 
+    public int generationSelec { get; set; }
+
     private static ParametresParties _instance;
 
     public static ParametresParties Instance {get;set;} = new ParametresParties();

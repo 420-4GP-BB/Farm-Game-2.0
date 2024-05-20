@@ -19,8 +19,16 @@ public class GestionnaireInterface : MonoBehaviour
         Fermiere
     }
 
+    enum Generation
+    {
+        Grille, 
+        Random, 
+        GameOfLife
+    }
+
     private Difficulte difficulte;
     private Personnage personnage;
+    private Generation generation;
     private GameObject lePersonnage;
 
     [SerializeField] private TMP_InputField nomJoueur;
@@ -37,7 +45,8 @@ public class GestionnaireInterface : MonoBehaviour
     [SerializeField] private GameObject fermier;
     [SerializeField] private GameObject fermiere;
 
-    // Start is called before the first frame update
+    [SerializeField] private TMP_Dropdown generationDropdown;
+
     void Start()
     {
         nomJoueur.text = "Mathurin";
@@ -47,6 +56,9 @@ public class GestionnaireInterface : MonoBehaviour
         MettreAJour(valeursFacile);
 
         personnage = Personnage.Fermier;
+
+        generation = Generation.Grille;
+
 
     }
 
@@ -74,6 +86,7 @@ public class GestionnaireInterface : MonoBehaviour
         }
     }
 
+
     public void DemarrerPartie()
     {
         int[] valeursActuelles = null;
@@ -90,6 +103,18 @@ public class GestionnaireInterface : MonoBehaviour
                 break;
         }
 
+        //generation = (Generation)generationDropdown.value;
+        //switch (generation)
+        //{
+        //    case Generation.Grille:
+
+        //        break;
+        //    case Generation.Random:
+        //        break;
+        //    case Generation.GameOfLife:
+        //        break;
+        //}
+
         ParametresParties.Instance.NomJoueur = nomJoueur.text;
         ParametresParties.Instance.OrDepart = valeursActuelles[0];
         ParametresParties.Instance.OeufsDepart = valeursActuelles[1];
@@ -98,6 +123,11 @@ public class GestionnaireInterface : MonoBehaviour
         ParametresParties.Instance.DelaiCueillete = valeursActuelles[4];
 
         ParametresParties.Instance.personnageSelec = personnagesDropdown.value;
+        ParametresParties.Instance.personnageSelec = personnagesDropdown.value;
+
+        ParametresParties.Instance.generationSelec = generationDropdown.value;
+
+
 
 
 
@@ -138,13 +168,11 @@ public class GestionnaireInterface : MonoBehaviour
                 lePersonnage = fermier;
                 fermier.SetActive(true);
                 fermiere.SetActive(false);
-                //ParametresParties.Instance.personnageSelec = lePersonnage; 
                 break;
             case Personnage.Fermiere:
                 lePersonnage = fermiere;
                 fermier.SetActive(false);
                 fermiere.SetActive(true);
-                //ParametresParties.Instance.personnageSelec = lePersonnage;  
                 break;
 
         }

@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private Soleil _soleil;
     [SerializeField] GameObject[] personnage;
+
     private ComportementJoueur _joueur;
     public GameObject leJoueur;
     private const float DISTANCE_ACTION = 3.0f;
@@ -14,6 +15,7 @@ public class GameManager : MonoBehaviour
     private EnergieJoueur _energieJoueur;
     private ChouMesh3D[] _chous;
     public int NumeroJour = 1;
+    
 
     private void Awake()
     {
@@ -94,8 +96,8 @@ public class GameManager : MonoBehaviour
             personnage[0].SetActive(false);
             personnage[1].SetActive(true);
         }
-
-
-
     }
+
+
+    
 }
