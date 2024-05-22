@@ -34,6 +34,7 @@ public class GameManager : MonoBehaviour
         FindObjectOfType<Soleil>().OnJourneeTerminee += NouvelleJournee;
 
         _energieJoueur.OnEnergieVide += EnergieVide;
+        
     }
 
     void NouvelleJournee()
@@ -65,6 +66,9 @@ public class GameManager : MonoBehaviour
 
         // L'?tat du joueur peut affecter le passage du temps (ex.: Dodo: tout va vite, menus: le temps est stopp?, etc)
         Time.timeScale *= _joueur.MultiplicateurScale;
+
+        
+                
     }
 
     /// <summary>

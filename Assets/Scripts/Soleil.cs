@@ -38,6 +38,8 @@ public class Soleil : MonoBehaviour
     /// </summary>
     public bool EstNuit => ProportionRestante >= progression21h || ProportionRestante <= progression5h;
 
+    public bool EstRenardActif => ProportionRestante <= (1-progression21h) || ProportionRestante >= (1-progression8h);
+
     [Header("Rotation pour changer graduellement la direction des ombres")]
     [SerializeField] private Vector3 rotationDepart;
     [SerializeField] private Vector3 rotationFin;
@@ -51,6 +53,9 @@ public class Soleil : MonoBehaviour
     private float _ancienPourcentage;    
     private float dureeJournee = ConstantesJeu.MINUTES_PAR_JOUR; // 24 heures
     private float dureeJourneeRestante;
+
+    [SerializeField] GameObject prefabRenard;
+    public int nbRenards = 0;
 
     // Pour les différentes phases de la journée
     private const float progression21h = 21.0f / 24;
@@ -137,6 +142,12 @@ public class Soleil : MonoBehaviour
         {
             OnJourneeTerminee?.Invoke();
             dureeJourneeRestante = dureeJournee;
+        }
+
+        if (EstRenardActif && nbRenards == 0)
+        {
+            Instantiate(prefabRenard);
+            nbRenards++;
         }
     }
 }

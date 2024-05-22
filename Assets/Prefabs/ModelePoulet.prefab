@@ -93,7 +93,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 647edd5944e4091418c641d293800bb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  zoneEntree: {fileID: 0}
+  _estAlaFerme: 0
+  prefabRenard: {fileID: 4020983980232809014, guid: 7e81a39760762cd4bb04e2889ac08258, type: 3}
 --- !u!195 &1007931774087834418
 NavMeshAgent:
   m_ObjectHideFlags: 0

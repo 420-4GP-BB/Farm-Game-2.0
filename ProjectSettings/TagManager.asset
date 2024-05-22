@@ -9,6 +9,8 @@ TagManager:
   - Fermier
   - Fermiere
   - Zone
+  - NouveauPoint
+  - PointRenard
   layers:
   - Default
   - TransparentFX

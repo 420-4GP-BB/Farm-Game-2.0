@@ -9,12 +9,17 @@ public class MouvementPoulet : MonoBehaviour
     private UnityEngine.GameObject joueur;
     private bool _suivreJoueur;
     public bool _estAlaFerme;
-    [SerializeField] GameObject ferme;
-
+    private Soleil soleil;
     private NavMeshAgent _agent;
     private Animator _animator;
 
     private GameObject[] _pointsDeDeplacement;
+    private GameObject[] _pointsJour;
+    private GameObject[] _pointsNuit;
+    //[SerializeField] GameObject _nouveauPoint;
+    private GameObject _nouveauPoint;
+    //[SerializeField] GameObject prefabRenard;
+    
 
     void Start()
     {
@@ -27,12 +32,33 @@ public class MouvementPoulet : MonoBehaviour
         _animator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
         _pointsDeDeplacement = GameObject.FindGameObjectsWithTag("PointsPoulet");
+        _pointsJour = _pointsDeDeplacement;
+        _pointsNuit = new GameObject[_pointsJour.Length + 1];
+        for (int i = 0; i < _pointsJour.Length; i++)
+        {
+            _pointsNuit[i] = _pointsJour[i];
+        }
+
+        _nouveauPoint = GameObject.Find("DevantFerme");
+        _pointsNuit[_pointsJour.Length] = _nouveauPoint;
+
         _animator.SetBool("Walk", true);
         _agent.stoppingDistance = 3.5f;
         if (!_estAlaFerme)
         {
             Initialiser();
         }
+
+       
+        
+
+        soleil = GameObject.FindObjectOfType<Soleil>();
+        if(soleil != null)
+        {
+            Debug.Log("SOleil trouvé");
+        }
+
+       
     }
 
     void Initialiser()
@@ -58,7 +84,7 @@ public class MouvementPoulet : MonoBehaviour
 
     void Update()
     {
-         if (_suivreJoueur && !_estAlaFerme)
+        if (_suivreJoueur && !_estAlaFerme)
         {
             if (Vector3.Distance(transform.position, joueur.transform.position) > 2f)
             {
@@ -68,9 +94,24 @@ public class MouvementPoulet : MonoBehaviour
             {
                 _agent.SetDestination(transform.position);
             }
-            
+
         }
 
+        Debug.Log(_pointsDeDeplacement.Length);
+
+        if (soleil.EstRenardActif)
+        {
+            Debug.Log("Creation du point");
+            
+            _pointsDeDeplacement = _pointsNuit;
+        }
+        else
+        {
+            Debug.Log("Point enleve");
+            _pointsDeDeplacement = _pointsJour;
+        }
+        
+       
         if (_estAlaFerme && !_agent.pathPending && _agent.remainingDistance < _agent.stoppingDistance)
         {
             _agent.speed = 1;
@@ -92,5 +133,7 @@ public class MouvementPoulet : MonoBehaviour
             gameObject.GetComponent<PondreOeufs>().enabled = true;
         }
     }
+
+
 
 }
