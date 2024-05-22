@@ -11,8 +11,7 @@ public class StrategieGameOfLife : StrategieGenerationArbres
     {
         int longueur = Mathf.FloorToInt(superficieZ/ espace);
         int largeur = Mathf.FloorToInt(superficieX / espace);
-        //int compteurVrai = 0;
-        //int compteurPlante = 0;
+        
         
         Debug.Log("Height : " + longueur + " Width : " + largeur); 
         bool[,] grille2d = new bool[largeur, longueur];
@@ -34,7 +33,6 @@ public class StrategieGameOfLife : StrategieGenerationArbres
             for (int gen = 0; gen < Generations; gen++)
             {
                 bool[,] grilleProchainGen = new bool[largeur, longueur];
-                //countTrue = 0;
                 for (int x = 0; x < largeur; x++)
                 {
                     for (int z = 0; z < longueur; z++)
@@ -51,17 +49,12 @@ public class StrategieGameOfLife : StrategieGenerationArbres
                             grilleProchainGen[x, z] = (neighbors == 3 || neighbors == 6 || neighbors == 7 || neighbors == 8);
                         }
 
-                        //if (newForestGrid[x, z])
-                        //{
-                        //    countTrue++;
-                        //}
+                        
                     }
                 }
 
                 grille2d = grilleProchainGen;
-            //Debug.Log("Generation : " + gen + " Nombre d'arbres générée : " + countTrue);
-            //Debug.Log("------------------------------------------------------------------");
-            //afficherGrid(forestGrid, height, width);
+            
 
         }
 
@@ -80,18 +73,18 @@ public class StrategieGameOfLife : StrategieGenerationArbres
 
                     
                         Instantiate(prefabArbre, position, Quaternion.identity);
-                    //Debug.Log("On plante dans la position : " + x + ", " + z);
-                    //countPlanted++;
+                    
                     }
                 }
             }
 
-        //Debug.Log("True : " + countTrue + " Planted : " + countPlanted);
     }
 
-    
-        // Une méthode qui compte les voisins
-        private int compterVoisins(bool[,] laGrille, int x, int z, int largeur, int longueur)
+
+    // Une méthode qui compte les voisins
+
+    // Code inspiré de cette source : https://stackoverflow.com/questions/36779050/check-neighbouring-numbers-in-matrix  
+    private int compterVoisins(bool[,] laGrille, int x, int z, int largeur, int longueur)
         {
             int compteur = 0;
 
