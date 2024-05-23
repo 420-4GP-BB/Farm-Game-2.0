@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[System.Serializable]
 public class EnergieJoueur : MonoBehaviour
 {
     private bool _modeImmortel;
@@ -25,7 +26,7 @@ public class EnergieJoueur : MonoBehaviour
 
     void Start()
     {
-        _energie = 1.0f;
+        //_energie = 1.0f;
         _mouvementJoueur = GetComponent<ComportementJoueur>();
         _soleil = GameObject.Find("Directional Light").GetComponent<Soleil>();
     }

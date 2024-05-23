@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private Soleil _soleil;
+    [SerializeField] public Soleil _soleil;
     [SerializeField] GameObject[] personnage;
 
     private ComportementJoueur _joueur;
@@ -15,11 +15,14 @@ public class GameManager : MonoBehaviour
     private EnergieJoueur _energieJoueur;
     private ChouMesh3D[] _chous;
     public int NumeroJour = 1;
+    public float heure;
     
 
     private void Awake()
     {
         initialiserPersonnage(ParametresParties.Instance.personnageSelec);
+
+        
     }
 
     void Start()
@@ -52,6 +55,7 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            GestionnaireSauvegarde.Instance.SauvegarderPartie();
             SceneManager.LoadScene("MenuConfiguration");
         }
 
@@ -66,6 +70,8 @@ public class GameManager : MonoBehaviour
 
         // L'?tat du joueur peut affecter le passage du temps (ex.: Dodo: tout va vite, menus: le temps est stopp?, etc)
         Time.timeScale *= _joueur.MultiplicateurScale;
+
+        heure = 24 * (1 - _soleil.ProportionRestante);
 
         
                 
@@ -82,6 +88,9 @@ public class GameManager : MonoBehaviour
             "Vous n'avez pas r?ussi ? vous garder en vie, vous tombez sans connaissance au milieu du champ." +
             "Un loup passe et vous d?guste en guise de d?ner. Meilleure chance la prochaine partie!");
         Time.timeScale = 0;
+
+        GestionnaireSauvegarde.Instance.SupprimerFichierDeSauvegarde();
+
     }
 
     private void initialiserPersonnage(int personnageSelec)

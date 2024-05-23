@@ -46,21 +46,31 @@ public class GestionnaireInterface : MonoBehaviour
     [SerializeField] private GameObject fermiere;
 
     [SerializeField] private TMP_Dropdown generationDropdown;
+    [SerializeField] private Button boutonCharger;
+
+    //private SauvegardesPreferences sauvegardesPreferences;
+    private const string NOM_JOUEUR = "NomJoueur";
+    private const string DIFFICULTE = "Difficulte";
+    private const string STRATEGIE_FORET = "StrategieForet";
+    private const string PERSONNAGE = "PERSONNAGE";
 
     void Start()
     {
-        nomJoueur.text = "Mathurin";
-        ChangerNomJoueur();
-
-        difficulte = Difficulte.Facile;
-        MettreAJour(valeursFacile);
-
-        personnage = Personnage.Fermier;
-
-        generation = Generation.Grille;
+        LoadUserPreferences();
 
 
+        // Ajouter la méthode charger partie au bouton
+        boutonCharger.onClick.AddListener(RestaurerPartie);
+        boutonCharger.interactable = GestionnaireSauvegarde.Instance.FichierExiste;
+        
+        
     }
+
+    public void RestaurerPartie()
+    {
+        GestionnaireSauvegarde.Instance.ChargerPartie("Ferme");
+    }
+
 
     void Update()
     {
@@ -76,6 +86,7 @@ public class GestionnaireInterface : MonoBehaviour
         {
             case Difficulte.Facile:
                 MettreAJour(valeursFacile);
+
                 break;
             case Difficulte.Moyen:
                 MettreAJour(valeursMoyen);
@@ -89,6 +100,10 @@ public class GestionnaireInterface : MonoBehaviour
 
     public void DemarrerPartie()
     {
+        SaveUserPreferences();
+
+        //ChangerDifficulte();
+
         int[] valeursActuelles = null;
         switch (difficulte)
         {
@@ -103,17 +118,7 @@ public class GestionnaireInterface : MonoBehaviour
                 break;
         }
 
-        //generation = (Generation)generationDropdown.value;
-        //switch (generation)
-        //{
-        //    case Generation.Grille:
-
-        //        break;
-        //    case Generation.Random:
-        //        break;
-        //    case Generation.GameOfLife:
-        //        break;
-        //}
+        
 
         ParametresParties.Instance.NomJoueur = nomJoueur.text;
         ParametresParties.Instance.OrDepart = valeursActuelles[0];
@@ -144,7 +149,13 @@ public class GestionnaireInterface : MonoBehaviour
 #else
         Application.Quit();
 #endif
+
+        PlayerPrefs.DeleteAll();
+        GestionnaireSauvegarde.Instance.SupprimerFichierDeSauvegarde();
+
     }
+
+
 
     private void MettreAJour(int[] valeurs)
     {
@@ -177,4 +188,36 @@ public class GestionnaireInterface : MonoBehaviour
 
         }
     }
+
+    private void SaveUserPreferences()
+    {
+        string playerName = nomJoueur.text;
+        int difficulty = difficulteDropdown.value;
+        string forestStrategy = generationDropdown.options[generationDropdown.value].text;
+        string characterType = personnagesDropdown.options[personnagesDropdown.value].text;
+       
+
+        PlayerPrefs.SetString(NOM_JOUEUR, playerName);
+        PlayerPrefs.SetInt(DIFFICULTE, difficulty);
+        PlayerPrefs.SetString(STRATEGIE_FORET, forestStrategy);
+        PlayerPrefs.SetString(PERSONNAGE, characterType);
+
+        PlayerPrefs.Save();
+    }
+
+    private void LoadUserPreferences()
+    {
+        string playerName = PlayerPrefs.GetString(NOM_JOUEUR, "Mathurin"); ;
+        int difficulty = PlayerPrefs.GetInt(DIFFICULTE, 0);
+        string forestStrategy = PlayerPrefs.GetString(STRATEGIE_FORET, "Grille");
+        string characterType = PlayerPrefs.GetString(PERSONNAGE, "Fermier");
+        
+
+        nomJoueur.text = playerName;
+        difficulteDropdown.value = difficulty;
+        generationDropdown.value = generationDropdown.options.FindIndex(option => option.text == forestStrategy);
+        personnagesDropdown.value = personnagesDropdown.options.FindIndex(option => option.text == characterType);
+        //ChangerDifficulte();
+    }
+
 }

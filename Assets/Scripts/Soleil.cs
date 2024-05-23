@@ -150,4 +150,10 @@ public class Soleil : MonoBehaviour
             nbRenards++;
         }
     }
+
+    public void modifierHeure(float heure)
+    {
+        dureeJourneeRestante = dureeJournee * (1 - heure / 24);
+        _ancienPourcentage = 1 - ProportionRestante;
+    }
 }

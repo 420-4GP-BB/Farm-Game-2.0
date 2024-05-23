@@ -89,12 +89,10 @@ public class EtatAction : EtatJoueur
             _navMeshAgent.enabled = false;
             pointDestination.y = Sujet.transform.position.y;
             Sujet.transform.position = _destination.GetComponent<Arbre>() != null ? pointDestination : pointDestination;
-            Debug.Log("Arrivé à la bûche et prêt à ramasser.");
 
             var actionnable = _destination.GetComponent<IActionnable>();
             if (actionnable != null && actionnable.Permis(Sujet))
             {
-                Debug.Log("Changement d'état pour ramasser la bûche.");
                 Sujet.ChangerEtat(actionnable.EtatAUtiliser(Sujet));
             }
             
