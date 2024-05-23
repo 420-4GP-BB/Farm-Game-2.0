@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Le gestionnaire de generation
 public class GestionnaireDeGeneration : MonoBehaviour
 {
     [SerializeField] GameObject[] zoneArbres;
     private StrategieGenerationArbres strategie;
     [SerializeField] GameObject prefabArbre;
-    //[SerializeField] GameObject zone;
 
     private void Start()
     {

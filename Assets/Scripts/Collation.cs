@@ -5,12 +5,14 @@ using UnityEngine;
 
 public class Collation : MonoBehaviour, IRamassable
 {
+    // LA classe pour collation
     private GameObject joueur;
     [SerializeField] string typeCollation;
     private Arbre arbreParent; // l'arbre auquel la collationAppartient
 
     void Start()
     {
+        // on trouve le joueur actif
         joueur = GameObject.Find("Fermier") != null ? GameObject.Find("Fermier") : GameObject.Find("Fermiere");
         if(joueur == null)
         {
@@ -18,11 +20,13 @@ public class Collation : MonoBehaviour, IRamassable
         }
     }
 
+    // une methode pour designer l'Arbre parent
     public void designerArbreParent(Arbre arbre)
     {
         arbreParent = arbre;
     }
 
+    // une methode pour ramasser la collation et la manger
     public void Ramasser(Inventaire inventaireJoueur)
     {
         joueur.GetComponent<ComportementJoueur>().MangerCollation(typeCollation);

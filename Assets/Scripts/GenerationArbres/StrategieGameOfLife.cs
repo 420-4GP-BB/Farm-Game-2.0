@@ -5,7 +5,7 @@ using UnityEngine.XR;
 
 public class StrategieGameOfLife : StrategieGenerationArbres
 {
-    private const int Generations = 10; // Nombre de générations à simuler
+    private const int Generations = 10; //Le nombre de génération
 
     public override void genererForet(GameObject prefabArbre, Vector3 positionDepart, float superficieX, float superficieZ, float espace)
     {
@@ -14,7 +14,7 @@ public class StrategieGameOfLife : StrategieGenerationArbres
         
         
         Debug.Log("Height : " + longueur + " Width : " + largeur); 
-        bool[,] grille2d = new bool[largeur, longueur];
+        bool[,] grille2d = new bool[largeur, longueur]; // créer une grille de boolean pour commencer la génération
 
         // Initialisation aléatoire de la grille
         System.Random rand = new System.Random();
@@ -29,7 +29,7 @@ public class StrategieGameOfLife : StrategieGenerationArbres
 
         afficherGrid(grille2d, longueur, largeur);
 
-         //Simulation de l'évolution de la forêt
+         //faire les générations de la foret
             for (int gen = 0; gen < Generations; gen++)
             {
                 bool[,] grilleProchainGen = new bool[largeur, longueur];
@@ -37,28 +37,28 @@ public class StrategieGameOfLife : StrategieGenerationArbres
                 {
                     for (int z = 0; z < longueur; z++)
                     {
-                        int neighbors = compterVoisins(grille2d, x, z, largeur, longueur);
+                        int voisins = compterVoisins(grille2d, x, z, largeur, longueur);
                         //Debug.Log(neighbors);
 
                         if (grille2d[x, z])
                         {
-                            grilleProchainGen[x, z] = (neighbors == 3 || neighbors == 4 || neighbors == 6 || neighbors == 7 || neighbors == 8);
+                            grilleProchainGen[x, z] = (voisins == 3 || voisins == 4 || voisins == 6 || voisins == 7 || voisins == 8);
                         }
                         else
                         {
-                            grilleProchainGen[x, z] = (neighbors == 3 || neighbors == 6 || neighbors == 7 || neighbors == 8);
+                            grilleProchainGen[x, z] = (voisins == 3 || voisins == 6 || voisins == 7 || voisins == 8);
                         }
 
                         
                     }
                 }
 
-                grille2d = grilleProchainGen;
+                grille2d = grilleProchainGen; // associer la nouvelle grille (de la nouvelle génération) avec l'ancienne grille 
             
 
         }
 
-        // Placement des arbres en fonction de la grille finale
+        // Instancier les arbres à la fin de la 10eme generation
         for (int x = 0; x < largeur; x++)
             {
                 for (int z = 0; z < longueur; z++)
@@ -66,7 +66,7 @@ public class StrategieGameOfLife : StrategieGenerationArbres
                     if (grille2d[x, z])
                     {
                         Vector3 position = new Vector3(
-                            positionDepart.x + (x * superficieX / largeur) + Random.Range(-1.25f, 1.25f) ,
+                            positionDepart.x + (x * superficieX / largeur) + Random.Range(-1.25f, 1.25f) , // un random entre -1.25 et 1.25 pour que les arbres ne soient pas collés 
                             positionDepart.y,
                             positionDepart.z + (z * superficieZ / longueur) + Random.Range(-1.25f, 1.25f)
                         );
@@ -88,11 +88,11 @@ public class StrategieGameOfLife : StrategieGenerationArbres
         {
             int compteur = 0;
 
-            for (int dx = -1; dx <= 1; dx++)
+            for (int dx = -1; dx <= 1; dx++) // l'emplacement possible d'un voisin (si on prend que x est la position de la case en x), ce sera soit en haut de la case (x+1) ou en bas (x-1)
             {
-                for (int dz = -1; dz <= 1; dz++)
+                for (int dz = -1; dz <= 1; dz++) // meme chose pour z
                 {
-                    if (dx == 0 && dz == 0)
+                    if (dx == 0 && dz == 0) // on ignore si on arrive a la case qu'on veut traiter (pas les voisins)
                     {
                         continue;
                     }
@@ -102,7 +102,7 @@ public class StrategieGameOfLife : StrategieGenerationArbres
 
                     if (voisinX >= 0 && voisinX < largeur && voisinZ >= 0 && voisinZ < longueur)
                     {
-                        if (laGrille[voisinX, voisinZ])
+                        if (laGrille[voisinX, voisinZ]) // si le voisin est : true, donc on augmente le compteur qui compte le nombre de voisins
                         {
                             compteur++;
                         }

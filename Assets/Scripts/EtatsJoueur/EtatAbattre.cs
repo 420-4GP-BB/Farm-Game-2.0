@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// L'etat pouir abattre l'arbre
 public class EtatAbattre : EtatJoueur
 {
     public override bool EstActif => true;

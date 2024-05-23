@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Arbre : MonoBehaviour, IBattable
 {
-    [SerializeField] public bool estCollation;
+    [SerializeField] public bool estCollation; // un booleen qui verifie si l'arbre est un arbre de collation (à glisser dans l'interface de unity)
     [SerializeField] GameObject buchePrefab;
     [SerializeField] GameObject[] lesCollationPrefab;
     private bool uneCollationAuPied;
@@ -13,7 +13,7 @@ public class Arbre : MonoBehaviour, IBattable
 
     void Start()
     {
-        uneCollationAuPied = false;
+        uneCollationAuPied = false; // au debut, il n'ya pas de collation 
         if (estCollation)
         {
             StartCoroutine(faireCollation());
@@ -22,11 +22,11 @@ public class Arbre : MonoBehaviour, IBattable
     }
 
    
-
+    // une coroutine qui fait descendre une collation chaque 30s
     IEnumerator faireCollation()
     {
             yield return new WaitForSeconds(30.0f);
-            if (!uneCollationAuPied)
+            if (!uneCollationAuPied) // s'il n'ya pas de collation au pied, on fait descendre une collation au hasard entre soda, hamburger et gateau
             {
                 unRandom = Random.Range(0, lesCollationPrefab.Length);
                 uneCollation = Instantiate(lesCollationPrefab[unRandom]);
@@ -37,18 +37,20 @@ public class Arbre : MonoBehaviour, IBattable
             }
     }
 
+    // une methode qui commence une coroutine pour faire tomber une nouvelle collation lorsqu'une collation est ramassé
     public void collationRamassee()
     {
         uneCollationAuPied = false;
         StartCoroutine(faireCollation());
     }
    
-
+    // une methode pour abattre les arbres
     public void Abbatre()
     {
         StartCoroutine(GererChuteEtDisparition());
     }
 
+    // une coroutine pour gerer la chute des arbres
     private IEnumerator GererChuteEtDisparition()
     {
         yield return new WaitForSeconds(1.0f);
@@ -59,6 +61,7 @@ public class Arbre : MonoBehaviour, IBattable
         Vector3 positionDebut = transform.position;
         Vector3 positionFin = positionDebut - new Vector3(0, 4, 0);
 
+        // faire une boucle pour faire tomber l'arbre selon la duree de la descente
         while (tempsEcoule < dureeDescente)
         {
             transform.position = Vector3.Lerp(positionDebut, positionFin, tempsEcoule / dureeDescente);
@@ -69,7 +72,7 @@ public class Arbre : MonoBehaviour, IBattable
         Destroy(gameObject);
     }
 
-
+    
 public EtatJoueur EtatAUtiliser(ComportementJoueur Sujet)
     {
         return new EtatAbattre(Sujet, this, gameObject);

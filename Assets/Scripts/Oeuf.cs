@@ -30,12 +30,13 @@ public class Oeuf : MonoBehaviour, IRamassable
         }
     }
 
+    // une methode pour decider si l'oeuf eclore ou pas
     private void deciderEclore()
     {
         System.Random rand = new System.Random();
-        double pourcentage = rand.NextDouble();
+        double pourcentage = rand.NextDouble();// faire un pourcentage random
         Debug.Log(pourcentage);
-        if(pourcentage <= 0.75)
+        if(pourcentage <= 0.75) // 75% pour ne pas eclore
         {
             Destroy(gameObject);
         }

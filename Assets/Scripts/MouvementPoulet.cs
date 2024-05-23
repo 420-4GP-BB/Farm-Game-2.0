@@ -32,8 +32,8 @@ public class MouvementPoulet : MonoBehaviour
         _animator = GetComponent<Animator>();
         _agent = GetComponent<NavMeshAgent>();
         _pointsDeDeplacement = GameObject.FindGameObjectsWithTag("PointsPoulet");
-        _pointsJour = _pointsDeDeplacement;
-        _pointsNuit = new GameObject[_pointsJour.Length + 1];
+        _pointsJour = _pointsDeDeplacement; // pour les points de deplacement en jour, ils sont associé sur la variable pointsJour
+        _pointsNuit = new GameObject[_pointsJour.Length + 1]; // les points entre 21h et 8h, ils sont associé sur la variable pointsNuit
         for (int i = 0; i < _pointsJour.Length; i++)
         {
             _pointsNuit[i] = _pointsJour[i];
@@ -84,7 +84,7 @@ public class MouvementPoulet : MonoBehaviour
 
     void Update()
     {
-        if (_suivreJoueur && !_estAlaFerme)
+        if (_suivreJoueur && !_estAlaFerme) // si elle n'est pas a la ferme, elle suit le joueur.
         {
             if (Vector3.Distance(transform.position, joueur.transform.position) > 2f)
             {
@@ -103,12 +103,12 @@ public class MouvementPoulet : MonoBehaviour
         {
             Debug.Log("Creation du point");
             
-            _pointsDeDeplacement = _pointsNuit;
+            _pointsDeDeplacement = _pointsNuit; // si le renard est actif, on associe les points de deplacement avec les points de nuit
         }
         else
         {
             Debug.Log("Point enleve");
-            _pointsDeDeplacement = _pointsJour;
+            _pointsDeDeplacement = _pointsJour; // si le renard est inactif, on associe avec les points de jour
         }
         
        
